@@ -1,5 +1,5 @@
 <%#
- Copyright 2013-2019 the original author or authors from the JHipster project.
+ Copyright 2013-2020 the original author or authors from the JHipster project.
 
  This file is part of the JHipster project, see https://www.jhipster.tech/
  for more information.
@@ -22,10 +22,12 @@
 put Sass variables here:
 eg $input-color: red;
 ****************************/
-// Override Boostrap variables
-<%_ if (clientTheme !== 'none') {_%>
+<%_ if (clientTheme !== 'none') { _%>
 @import "~bootswatch/dist/<%= clientTheme %>/variables";
-<%_ } _%>// Import Bootstrap source files from node_modules
+<%_ } _%>
+// Override Bootstrap variables
+@import "bootstrap-variables";
+// Import Bootstrap source files from node_modules
 @import '~bootstrap/scss/bootstrap';
 <%_ if (clientTheme !== 'none') { _%>
 @import "~bootswatch/dist/<%= clientTheme %>/bootswatch";

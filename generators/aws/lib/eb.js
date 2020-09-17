@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2019 the original author or authors from the JHipster project.
+ * Copyright 2013-2020 the original author or authors from the JHipster project.
  *
  * This file is part of the JHipster project, see https://www.jhipster.tech/
  * for more information.
@@ -22,7 +22,8 @@ let uuidV4;
 const Eb = (module.exports = function Eb(Aws, generator) {
     aws = Aws;
     try {
-        uuidV4 = require('uuid/v4'); // eslint-disable-line
+        const { v4 } = require('uuid'); // eslint-disable-line
+        uuidV4 = v4;
     } catch (e) {
         generator.error(`Something went wrong while running jhipster:aws:\n${e}`);
     }
@@ -31,8 +32,8 @@ const Eb = (module.exports = function Eb(Aws, generator) {
 Eb.prototype.createApplication = function createApplication(params, callback) {
     const applicationName = params.applicationName;
     const bucketName = params.bucketName;
-    const jarKey = params.jarKey;
-    const versionLabel = `${this.jarKey}-${uuidV4()}`;
+    const warKey = params.warKey;
+    const versionLabel = `${this.warKey}-${uuidV4()}`;
     const environmentName = params.environmentName;
     const dbUrl = params.dbUrl;
     const dbUsername = params.dbUsername;
@@ -43,7 +44,7 @@ Eb.prototype.createApplication = function createApplication(params, callback) {
         applicationName,
         versionLabel,
         bucketName,
-        jarKey
+        warKey,
     };
 
     createApplicationVersion(applicationParams, err => {
@@ -57,7 +58,7 @@ Eb.prototype.createApplication = function createApplication(params, callback) {
                 dbUrl,
                 dbUsername,
                 dbPassword,
-                instanceType
+                instanceType,
             };
 
             checkEnvironment(environmentParams, (err, data) => {
@@ -89,7 +90,7 @@ function createApplicationVersion(params, callback) {
     const applicationName = params.applicationName;
     const versionLabel = params.versionLabel;
     const bucketName = params.bucketName;
-    const jarKey = params.jarKey;
+    const warKey = params.warKey;
 
     const elasticbeanstalk = new aws.ElasticBeanstalk();
 
@@ -99,8 +100,8 @@ function createApplicationVersion(params, callback) {
         AutoCreateApplication: true,
         SourceBundle: {
             S3Bucket: bucketName,
-            S3Key: jarKey
-        }
+            S3Key: warKey,
+        },
     };
 
     elasticbeanstalk.createApplicationVersion(applicationParams, err => {
@@ -120,7 +121,7 @@ function checkEnvironment(params, callback) {
 
     const environmentParams = {
         ApplicationName: applicationName,
-        EnvironmentNames: [environmentName]
+        EnvironmentNames: [environmentName],
     };
 
     elasticbeanstalk.describeEnvironments(environmentParams, (err, data) => {
@@ -156,40 +157,40 @@ function createEnvironment(params, callback) {
                 {
                     Namespace: 'aws:elasticbeanstalk:application:environment',
                     OptionName: 'spring.profiles.active',
-                    Value: 'prod'
+                    Value: 'prod',
                 },
                 {
                     Namespace: 'aws:elasticbeanstalk:application:environment',
                     OptionName: 'spring.datasource.url',
-                    Value: dbUrl
+                    Value: dbUrl,
                 },
                 {
                     Namespace: 'aws:elasticbeanstalk:application:environment',
                     OptionName: 'spring.datasource.username',
-                    Value: dbUsername
+                    Value: dbUsername,
                 },
                 {
                     Namespace: 'aws:elasticbeanstalk:application:environment',
                     OptionName: 'spring.datasource.password',
-                    Value: dbPassword
+                    Value: dbPassword,
                 },
                 {
                     Namespace: 'aws:autoscaling:launchconfiguration',
                     OptionName: 'InstanceType',
-                    Value: instanceType
+                    Value: instanceType,
                 },
                 {
                     Namespace: 'aws:autoscaling:launchconfiguration',
                     OptionName: 'IamInstanceProfile',
-                    Value: 'aws-elasticbeanstalk-ec2-role'
-                }
+                    Value: 'aws-elasticbeanstalk-ec2-role',
+                },
             ],
             SolutionStackName: solutionStackName,
             VersionLabel: versionLabel,
             Tier: {
                 Name: 'WebServer',
-                Type: 'Standard'
-            }
+                Type: 'Standard',
+            },
         };
 
         elasticbeanstalk.createEnvironment(environmentParams, err => {
@@ -230,10 +231,10 @@ function updateEnvironment(params, callback) {
             {
                 Namespace: 'aws:autoscaling:launchconfiguration',
                 OptionName: 'InstanceType',
-                Value: instanceType
-            }
+                Value: instanceType,
+            },
         ],
-        VersionLabel: versionLabel
+        VersionLabel: versionLabel,
     };
 
     elasticbeanstalk.updateEnvironment(environmentParams, err => {

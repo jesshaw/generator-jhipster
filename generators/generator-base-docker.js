@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2019 the original author or authors from the JHipster project.
+ * Copyright 2013-2020 the original author or authors from the JHipster project.
  *
  * This file is part of the JHipster project, see https://www.jhipster.tech/
  * for more information.
@@ -30,22 +30,22 @@ module.exports = class extends BaseGenerator {
         this.option('from-cli', {
             desc: 'Indicates the command is run from JHipster CLI',
             type: Boolean,
-            defaults: false
+            defaults: false,
         });
         // This adds support for a `--skip-checks` flag
         this.option('skip-checks', {
             desc: 'Check the status of the required tools',
             type: Boolean,
-            defaults: false
+            defaults: false,
         });
         // This adds support for a `--skip-prompts` flag
         this.option('skip-prompts', {
             desc: 'Generate pre-existing configuration',
             type: Boolean,
-            defaults: false
+            defaults: false,
         });
-        this.regenerate = this.options['skip-prompts'];
-        this.skipChecks = this.options['skip-checks'];
+        this.regenerate = this.options.skipPrompts;
+        this.skipChecks = this.options.skipChecks;
         this.registerPrettierTransform();
     }
 
@@ -60,12 +60,7 @@ module.exports = class extends BaseGenerator {
                 this.DOCKER_KAFKA = constants.DOCKER_KAFKA;
                 this.DOCKER_ZOOKEEPER = constants.DOCKER_ZOOKEEPER;
                 this.DOCKER_JHIPSTER_REGISTRY = constants.DOCKER_JHIPSTER_REGISTRY;
-                this.DOCKER_JHIPSTER_CONSOLE = constants.DOCKER_JHIPSTER_CONSOLE;
-                this.DOCKER_JHIPSTER_CURATOR = constants.DOCKER_JHIPSTER_CURATOR;
-                this.DOCKER_JHIPSTER_ELASTICSEARCH = constants.DOCKER_JHIPSTER_ELASTICSEARCH;
-                this.DOCKER_JHIPSTER_LOGSTASH = constants.DOCKER_JHIPSTER_LOGSTASH;
-                this.DOCKER_JHIPSTER_IMPORT_DASHBOARDS = constants.DOCKER_JHIPSTER_IMPORT_DASHBOARDS;
-                this.DOCKER_JHIPSTER_ZIPKIN = constants.DOCKER_JHIPSTER_ZIPKIN;
+                this.DOCKER_JHIPSTER_CONTROL_CENTER = constants.DOCKER_JHIPSTER_CONTROL_CENTER;
                 this.DOCKER_KEYCLOAK = constants.DOCKER_KEYCLOAK;
                 this.DOCKER_TRAEFIK = constants.DOCKER_TRAEFIK;
                 this.DOCKER_CONSUL = constants.DOCKER_CONSUL;
@@ -76,11 +71,13 @@ module.exports = class extends BaseGenerator {
                 this.DOCKER_COMPOSE_FORMAT_VERSION = constants.DOCKER_COMPOSE_FORMAT_VERSION;
 
                 this.DOCKER_MYSQL = constants.DOCKER_MYSQL;
+                this.DOCKER_MSSQL = constants.DOCKER_MSSQL;
                 this.DOCKER_MARIADB = constants.DOCKER_MARIADB;
                 this.DOCKER_POSTGRESQL = constants.DOCKER_POSTGRESQL;
                 this.DOCKER_MONGODB = constants.DOCKER_MONGODB;
                 this.DOCKER_COUCHBASE = constants.DOCKER_COUCHBASE;
                 this.DOCKER_MEMCACHED = constants.DOCKER_MEMCACHED;
+                this.DOCKER_REDIS = constants.DOCKER_REDIS;
                 this.DOCKER_ELASTICSEARCH = constants.DOCKER_ELASTICSEARCH;
                 this.DOCKER_PROMETHEUS_OPERATOR = constants.DOCKER_PROMETHEUS_OPERATOR;
                 this.DOCKER_GRAFANA_WATCHER = constants.DOCKER_GRAFANA_WATCHER;
@@ -93,7 +90,7 @@ module.exports = class extends BaseGenerator {
 
             loadConfig() {
                 loadFromYoRc.call(this);
-            }
+            },
         };
     }
 
@@ -107,7 +104,7 @@ module.exports = class extends BaseGenerator {
             askForMonitoring: prompts.askForMonitoring,
             askForConsoleOptions: prompts.askForConsoleOptions,
             askForServiceDiscovery: prompts.askForServiceDiscovery,
-            askForAdminPassword: prompts.askForAdminPassword
+            askForAdminPassword: prompts.askForAdminPassword,
         };
     }
 
@@ -119,7 +116,7 @@ module.exports = class extends BaseGenerator {
 
             checkImages,
             generateJwtSecret,
-            setAppsFolderPaths
+            setAppsFolderPaths,
         };
     }
 };

@@ -29,14 +29,30 @@ fi
 
 if [[ ("$JHI_ENTITY" == "mongodb") || ("$JHI_ENTITY" == "couchbase") ]]; then
     moveEntity DocumentBankAccount
+    moveEntity EmbeddedOperation
+    moveEntity Place
+    moveEntity Division
 
     moveEntity FieldTestEntity
-    moveEntity FieldTestMapstructEntity
-    moveEntity FieldTestServiceClassEntity
+    moveEntity FieldTestMapstructAndServiceClassEntity
+    moveEntity FieldTestServiceClassAndJpaFilteringEntity
     moveEntity FieldTestServiceImplEntity
     moveEntity FieldTestInfiniteScrollEntity
-    moveEntity FieldTestPagerEntity
     moveEntity FieldTestPaginationEntity
+
+    moveEntity EntityWithDTO
+    moveEntity EntityWithPaginationAndDTO
+    moveEntity EntityWithServiceClassAndPagination
+    moveEntity EntityWithServiceClassPaginationAndDTO
+    moveEntity EntityWithServiceImplAndDTO
+    moveEntity EntityWithServiceImplAndPagination
+    moveEntity EntityWithServiceImplPaginationAndDTO
+
+elif [[ "$JHI_ENTITY" == "neo4j" ]]; then
+    moveEntity Album
+    moveEntity Track
+    moveEntity Genre
+    moveEntity Artist
 
 elif [[ "$JHI_ENTITY" == "cassandra" ]]; then
     moveEntity CassBankAccount
@@ -52,20 +68,18 @@ elif [[ "$JHI_ENTITY" == "micro" ]]; then
     moveEntity MicroserviceLabel
 
     moveEntity FieldTestEntity
-    moveEntity FieldTestMapstructEntity
-    moveEntity FieldTestServiceClassEntity
+    moveEntity FieldTestMapstructAndServiceClassEntity
+    moveEntity FieldTestServiceClassAndJpaFilteringEntity
     moveEntity FieldTestServiceImplEntity
     moveEntity FieldTestInfiniteScrollEntity
-    moveEntity FieldTestPagerEntity
     moveEntity FieldTestPaginationEntity
 
 elif [[ "$JHI_ENTITY" == "uaa" ]]; then
     moveEntity FieldTestEntity
-    moveEntity FieldTestMapstructEntity
-    moveEntity FieldTestServiceClassEntity
+    moveEntity FieldTestMapstructAndServiceClassEntity
+    moveEntity FieldTestServiceClassAndJpaFilteringEntity
     moveEntity FieldTestServiceImplEntity
     moveEntity FieldTestInfiniteScrollEntity
-    moveEntity FieldTestPagerEntity
     moveEntity FieldTestPaginationEntity
 
 elif [[ "$JHI_ENTITY" == "sqllight" ]]; then
@@ -81,19 +95,18 @@ elif [[ "$JHI_ENTITY" == "sqlfull" ]]; then
     moveEntity Division
 
     moveEntity FieldTestEntity
-    moveEntity FieldTestMapstructEntity
-    moveEntity FieldTestServiceClassEntity
+    moveEntity FieldTestMapstructAndServiceClassEntity
+    moveEntity FieldTestServiceClassAndJpaFilteringEntity
     moveEntity FieldTestServiceImplEntity
     moveEntity FieldTestInfiniteScrollEntity
-    moveEntity FieldTestPagerEntity
     moveEntity FieldTestPaginationEntity
+    moveEntity FieldTestEnumWithValue
 
     moveEntity TestEntity
     moveEntity TestMapstruct
     moveEntity TestServiceClass
     moveEntity TestServiceImpl
     moveEntity TestInfiniteScroll
-    moveEntity TestPager
     moveEntity TestPagination
     moveEntity TestManyToOne
     moveEntity TestManyToMany
@@ -104,29 +117,21 @@ elif [[ "$JHI_ENTITY" == "sqlfull" ]]; then
     moveEntity SuperMegaLargeTestEntity
 
     moveEntity EntityWithDTO
-    moveEntity EntityWithPagination
     moveEntity EntityWithPaginationAndDTO
-    moveEntity EntityWithServiceClass
-    moveEntity EntityWithServiceClassAndDTO
     moveEntity EntityWithServiceClassAndPagination
     moveEntity EntityWithServiceClassPaginationAndDTO
-    moveEntity EntityWithServiceImpl
     moveEntity EntityWithServiceImplAndDTO
     moveEntity EntityWithServiceImplAndPagination
     moveEntity EntityWithServiceImplPaginationAndDTO
-    
-    moveEntity MapsIdParentEntityWithoutDTO
-    moveEntity MapsIdChildEntityWithoutDTO
-    moveEntity MapsIdParentEntityWithDTO
-    moveEntity MapsIdChildEntityWithDTO
-    moveEntity MapsIdUserProfileWithDTO
-    
 
     moveEntity MapsIdParentEntityWithoutDTO
     moveEntity MapsIdChildEntityWithoutDTO
     moveEntity MapsIdParentEntityWithDTO
     moveEntity MapsIdChildEntityWithDTO
     moveEntity MapsIdUserProfileWithDTO
+
+    moveEntity JpaFilteringRelationship
+    moveEntity JpaFilteringOtherSide
 
 elif [[ "$JHI_ENTITY" == "sql" ]]; then
     moveEntity BankAccount
@@ -134,24 +139,23 @@ elif [[ "$JHI_ENTITY" == "sql" ]]; then
     moveEntity Operation
 
     moveEntity FieldTestEntity
-    moveEntity FieldTestMapstructEntity
-    moveEntity FieldTestServiceClassEntity
+    moveEntity FieldTestMapstructAndServiceClassEntity
+    moveEntity FieldTestServiceClassAndJpaFilteringEntity
     moveEntity FieldTestServiceImplEntity
     moveEntity FieldTestInfiniteScrollEntity
-    moveEntity FieldTestPagerEntity
     moveEntity FieldTestPaginationEntity
+    moveEntity FieldTestEnumWithValue
 
     moveEntity EntityWithDTO
-    moveEntity EntityWithPagination
     moveEntity EntityWithPaginationAndDTO
-    moveEntity EntityWithServiceClass
-    moveEntity EntityWithServiceClassAndDTO
     moveEntity EntityWithServiceClassAndPagination
     moveEntity EntityWithServiceClassPaginationAndDTO
-    moveEntity EntityWithServiceImpl
     moveEntity EntityWithServiceImplAndDTO
     moveEntity EntityWithServiceImplAndPagination
     moveEntity EntityWithServiceImplPaginationAndDTO
+
+    moveEntity MapsIdUserProfileWithDTO
+
 fi
 
 #-------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 <%#
- Copyright 2013-2019 the original author or authors from the JHipster project.
+ Copyright 2013-2020 the original author or authors from the JHipster project.
 
  This file is part of the JHipster project, see https://www.jhipster.tech/
  for more information.
@@ -16,44 +16,50 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -%>
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import {
-    <%=angularXAppName%>SharedLibsModule,
-    <%=angularXAppName%>SharedCommonModule,
-    <%_ if (authenticationType !== 'oauth2') { _%>
-    <%=jhiPrefixCapitalized%>LoginModalComponent,
-    <%_ } _%>
-    HasAnyAuthorityDirective
-} from './';
+import { NgModule } from '@angular/core';
+import { SharedLibsModule } from './shared-libs.module';
+<%_ if (enableTranslation) { _%>
+import { FindLanguageFromKeyPipe } from './language/find-language-from-key.pipe';
+<%_ } _%>
+import { AlertComponent } from './alert/alert.component';
+import { AlertErrorComponent } from './alert/alert-error.component';
+<%_ if (authenticationType !== 'oauth2') { _%>
+import { LoginModalComponent } from '../core/login/login-modal.component';
+<%_ } _%>
+import { HasAnyAuthorityDirective } from './auth/has-any-authority.directive';
+import { DurationPipe } from './duration.pipe';
 
 @NgModule({
     imports: [
-        <%=angularXAppName%>SharedLibsModule,
-        <%=angularXAppName%>SharedCommonModule
+        SharedLibsModule
     ],
     declarations: [
-        <%_ if (authenticationType !== 'oauth2') { _%>
-        <%=jhiPrefixCapitalized%>LoginModalComponent,
+        <%_ if (enableTranslation) { _%>
+        FindLanguageFromKeyPipe,
         <%_ } _%>
-        HasAnyAuthorityDirective
+        AlertComponent,
+        AlertErrorComponent,
+        <%_ if (authenticationType !== 'oauth2') { _%>
+        LoginModalComponent,
+        <%_ } _%>
+        HasAnyAuthorityDirective,
+        DurationPipe
     ],
     <%_ if (authenticationType !== 'oauth2') { _%>
-    entryComponents: [<%=jhiPrefixCapitalized%>LoginModalComponent],
+    entryComponents: [LoginModalComponent],
     <%_ } _%>
     exports: [
-        <%=angularXAppName%>SharedCommonModule,
-        <%_ if (authenticationType !== 'oauth2') { _%>
-        <%=jhiPrefixCapitalized%>LoginModalComponent,
+        SharedLibsModule,
+        <%_ if (enableTranslation) { _%>
+        FindLanguageFromKeyPipe,
         <%_ } _%>
-        HasAnyAuthorityDirective
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
-
+        AlertComponent,
+        AlertErrorComponent,
+        <%_ if (authenticationType !== 'oauth2') { _%>
+        LoginModalComponent,
+        <%_ } _%>
+        HasAnyAuthorityDirective,
+        DurationPipe
+    ]
 })
-export class <%=angularXAppName%>SharedModule {
-    static forRoot() {
-        return {
-            ngModule: <%=angularXAppName%>SharedModule
-        };
-    }
-}
+export class SharedModule {}

@@ -1,5 +1,5 @@
 <%#
- Copyright 2013-2019 the original author or authors from the JHipster project.
+ Copyright 2013-2020 the original author or authors from the JHipster project.
 
  This file is part of the JHipster project, see https://www.jhipster.tech/
  for more information.
@@ -25,16 +25,17 @@ import { IconProp } from '@fortawesome/fontawesome-svg-core';
 export interface IMenuItem {
   icon: IconProp;
   to: string;
-  id?: string
+  id?: string;
+  "data-cy"?: string;
 }
 
 export default class MenuItem extends React.Component<IMenuItem> {
 
   render() {
-    const { to, icon, id, children } = this.props;
+    const { to, icon, id, children, "data-cy": string } = this.props;
 
     return (
-      <DropdownItem tag={Link} to={to} id={id}>
+      <DropdownItem tag={Link} to={to} id={id} data-cy={this.props["data-cy"]} >
         <FontAwesomeIcon icon={icon} fixedWidth /> {children}
       </DropdownItem>
     );

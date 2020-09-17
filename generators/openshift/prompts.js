@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2019 the original author or authors from the JHipster project.
+ * Copyright 2013-2020 the original author or authors from the JHipster project.
  *
  * This file is part of the JHipster project, see https://www.jhipster.tech/
  * for more information.
@@ -21,7 +21,7 @@ const dockerPrompts = require('../docker-prompts');
 module.exports = {
     askForOpenShiftNamespace,
     askForStorageType,
-    ...dockerPrompts
+    ...dockerPrompts,
 };
 
 function askForOpenShiftNamespace() {
@@ -33,8 +33,8 @@ function askForOpenShiftNamespace() {
             type: 'input',
             name: 'openshiftNamespace',
             message: 'What should we use for the OpenShift namespace?',
-            default: this.openshiftNamespace ? this.openshiftNamespace : 'default'
-        }
+            default: this.openshiftNamespace ? this.openshiftNamespace : 'default',
+        },
     ];
 
     this.prompt(prompts).then(props => {
@@ -49,12 +49,7 @@ function askForStorageType() {
 
     let storageEnabled = false;
     this.appConfigs.some((appConfig, index) => {
-        if (
-            appConfig.prodDatabaseType !== 'no' ||
-            appConfig.searchEngine === 'elasticsearch' ||
-            appConfig.monitoring === 'elk' ||
-            appConfig.monitoring === 'prometheus'
-        ) {
+        if (appConfig.prodDatabaseType !== 'no' || appConfig.searchEngine === 'elasticsearch' || appConfig.monitoring === 'prometheus') {
             storageEnabled = true;
             return storageEnabled;
         }
@@ -75,15 +70,15 @@ function askForStorageType() {
             choices: [
                 {
                     value: 'persistent',
-                    name: 'Persistent Storage'
+                    name: 'Persistent Storage',
                 },
                 {
                     value: 'ephemeral',
-                    name: 'Ephemeral Storage'
-                }
+                    name: 'Ephemeral Storage',
+                },
             ],
-            default: 'ephemeral'
-        }
+            default: 'ephemeral',
+        },
     ];
 
     this.prompt(prompts).then(props => {

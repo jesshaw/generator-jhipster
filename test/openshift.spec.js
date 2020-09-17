@@ -5,7 +5,6 @@ const fse = require('fs-extra');
 
 const expectedFiles = {
     sccconfig: ['./ocp/registry/scc-config.yml'],
-    elk: ['./ocp/monitoring/jhipster-monitoring.yml'],
     eurekaregistry: ['./ocp/registry/jhipster-registry.yml', './ocp/registry/application-configmap.yml'],
     consulregistry: ['./ocp/registry/consul.yml', './ocp/registry/application-configmap.yml'],
     applcgw: ['./ocp/jhgate/jhgate-deployment.yml', './ocp/jhgate/jhgate-mysql.yml'],
@@ -17,8 +16,8 @@ const expectedFiles = {
     monolith: [
         './ocp/samplemysql/samplemysql-deployment.yml',
         './ocp/samplemysql/samplemysql-mysql.yml',
-        './ocp/samplemysql/samplemysql-elasticsearch.yml'
-    ]
+        './ocp/samplemysql/samplemysql-elasticsearch.yml',
+    ],
 };
 
 describe('JHipster OpenShift Sub Generator', () => {
@@ -38,7 +37,7 @@ describe('JHipster OpenShift Sub Generator', () => {
                     dockerRepositoryName: 'ocrepo',
                     dockerPushCommand: 'docker push',
                     openshiftNamespace: 'default',
-                    monitoring: 'no'
+                    monitoring: 'no',
                 })
                 .on('end', done);
         });
@@ -70,7 +69,7 @@ describe('JHipster OpenShift Sub Generator', () => {
                     dockerRepositoryName: 'ocrepo',
                     dockerPushCommand: 'docker push',
                     openshiftNamespace: 'default',
-                    monitoring: 'no'
+                    monitoring: 'no',
                 })
                 .on('end', done);
         });
@@ -88,7 +87,7 @@ describe('JHipster OpenShift Sub Generator', () => {
         });
     });
 
-    describe('gateway and one microservice with mysql and elk', () => {
+    describe('gateway and one microservice with mysql', () => {
         before(done => {
             helpers
                 .run(require.resolve('../generators/openshift'))
@@ -103,7 +102,6 @@ describe('JHipster OpenShift Sub Generator', () => {
                     dockerRepositoryName: 'ocrepo',
                     dockerPushCommand: 'docker push',
                     openshiftNamespace: 'default',
-                    monitoring: 'elk'
                 })
                 .on('end', done);
         });
@@ -118,9 +116,6 @@ describe('JHipster OpenShift Sub Generator', () => {
         });
         it('creates expected msmysql files', () => {
             assert.file(expectedFiles.msmysql);
-        });
-        it('creates expected elk files', () => {
-            assert.file(expectedFiles.elk);
         });
     });
 
@@ -139,7 +134,7 @@ describe('JHipster OpenShift Sub Generator', () => {
                     dockerRepositoryName: 'ocrepo',
                     dockerPushCommand: 'docker push',
                     openshiftNamespace: 'default',
-                    monitoring: 'no'
+                    monitoring: 'no',
                 })
                 .on('end', done);
         });
@@ -174,7 +169,7 @@ describe('JHipster OpenShift Sub Generator', () => {
                     chosenApps: ['01-gateway', '02-mysql', '03-psql', '04-mongo', '05-cassandra', '07-mariadb'],
                     dockerRepositoryName: 'ocrepo',
                     dockerPushCommand: 'docker push',
-                    openshiftNamespace: 'default'
+                    openshiftNamespace: 'default',
                 })
                 .on('end', done);
         });
@@ -218,7 +213,7 @@ describe('JHipster OpenShift Sub Generator', () => {
                     chosenApps: ['08-monolith'],
                     dockerRepositoryName: 'ocrepo',
                     dockerPushCommand: 'docker push',
-                    openshiftNamespace: 'default'
+                    openshiftNamespace: 'default',
                 })
                 .on('end', done);
         });
@@ -230,7 +225,7 @@ describe('JHipster OpenShift Sub Generator', () => {
         });
     });
 
-    describe('monolith application with elk', () => {
+    describe('monolith application', () => {
         before(done => {
             helpers
                 .run(require.resolve('../generators/openshift'))
@@ -245,7 +240,6 @@ describe('JHipster OpenShift Sub Generator', () => {
                     dockerRepositoryName: 'ocrepo',
                     dockerPushCommand: 'docker push',
                     openshiftNamespace: 'default',
-                    monitoring: 'elk'
                 })
                 .on('end', done);
         });
@@ -254,9 +248,6 @@ describe('JHipster OpenShift Sub Generator', () => {
         });
         it('creates expected scc files', () => {
             assert.file(expectedFiles.sccconfig);
-        });
-        it('creates expected elk files', () => {
-            assert.file(expectedFiles.elk);
         });
     });
 });

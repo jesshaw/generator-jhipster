@@ -1,5 +1,5 @@
 <%#
- Copyright 2013-2019 the original author or authors from the JHipster project.
+ Copyright 2013-2020 the original author or authors from the JHipster project.
 
  This file is part of the JHipster project, see https://www.jhipster.tech/
  for more information.
@@ -16,10 +16,12 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -%>
-package <%=packageName%>.config;
+package <%= packageName %>.config;
 <%_ if (databaseType === 'mongodb') { _%>
 
-import com.github.mongobee.Mongobee;
+import com.github.cloudyrock.mongock.driver.mongodb.springdata.v3.SpringDataMongo3Driver;
+import com.github.cloudyrock.spring.v5.MongockSpring5;
+import com.github.cloudyrock.spring.v5.MongockSpring5.MongockInitializingBeanRunner;
 
 import io.github.jhipster.config.JHipsterConstants;
 import io.github.jhipster.domain.util.JSR310DateConverters.*;
@@ -36,22 +38,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
 <%_ } _%>
 <%_ if (databaseType === 'mongodb') { _%>
-import org.springframework.cloud.Cloud;
-import org.springframework.cloud.CloudException;
+import org.springframework.beans.factory.annotation.Value;
 <%_ } _%>
 import org.springframework.cloud.config.java.AbstractCloudConfig;
-<%_ if (databaseType === 'mongodb') { _%>
-import org.springframework.cloud.service.ServiceInfo;
-import org.springframework.cloud.service.common.MongoServiceInfo;
-<%_ } _%>
 import org.springframework.context.annotation.*;
 <%_ if (databaseType === 'mongodb') { _%>
+import org.springframework.context.ApplicationContext;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 import org.springframework.data.mongodb.core.mapping.event.ValidatingMongoEventListener;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.data.mongodb.repository.config.Enable<% if (reactive) { %>Reactive<% } %>MongoRepositories;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 <%_ } _%>
 <%_ if (databaseType === 'sql') { _%>
@@ -68,7 +65,7 @@ import java.util.List;
 
 @Configuration
 <%_ if (databaseType === 'mongodb') { _%>
-@EnableMongoRepositories("<%=packageName%>.repository")
+@Enable<% if (reactive) { %>Reactive<% } %>MongoRepositories("<%= packageName %>.repository")
 <%_ } _%>
 @Profile(JHipsterConstants.SPRING_PROFILE_CLOUD)
 public class CloudDatabaseConfiguration extends AbstractCloudConfig {
@@ -77,7 +74,7 @@ public class CloudDatabaseConfiguration extends AbstractCloudConfig {
     private final Logger log = LoggerFactory.getLogger(CloudDatabaseConfiguration.class);
     <%_ } _%>
     <%_ if (databaseType === 'sql') { _%>
-    
+
     private static final String CLOUD_CONFIGURATION_HIKARI_PREFIX = "spring.datasource.hikari";
 
     @Bean
@@ -88,11 +85,6 @@ public class CloudDatabaseConfiguration extends AbstractCloudConfig {
     }
     <%_ } _%>
     <%_ if (databaseType === 'mongodb') { _%>
-
-    @Bean
-    public MongoDbFactory mongoFactory() {
-        return connectionFactory().mongoDbFactory();
-    }
 
     @Bean
     public LocalValidatorFactoryBean validator() {
@@ -114,22 +106,17 @@ public class CloudDatabaseConfiguration extends AbstractCloudConfig {
     }
 
     @Bean
-    public Mongobee mongobee(MongoDbFactory mongoDbFactory, MongoTemplate mongoTemplate, Cloud cloud) {
-        log.debug("Configuring Cloud Mongobee");
-        List<ServiceInfo> matchingServiceInfos = cloud.getServiceInfos(MongoDbFactory.class);
-
-        if (matchingServiceInfos.size() != 1) {
-            throw new CloudException("No unique service matching MongoDbFactory found. Expected 1, found "
-                + matchingServiceInfos.size());
-        }
-        MongoServiceInfo info = (MongoServiceInfo) matchingServiceInfos.get(0);
-        Mongobee mongobee = new Mongobee(info.getUri());
-        mongobee.setDbName(mongoDbFactory.getDb().getName());
-        mongobee.setMongoTemplate(mongoTemplate);
-        // package to scan for migrations
-        mongobee.setChangeLogsScanPackage("<%=packageName%>.config.dbmigrations");
-        mongobee.setEnabled(true);
-        return mongobee;
+    public MongockInitializingBeanRunner mongockInitializingBeanRunner(ApplicationContext springContext,
+              MongoTemplate mongoTemplate,
+              @Value("${mongock.lockAcquiredForMinutes:5}") long lockAcquiredForMinutes,
+              @Value("${mongock.maxWaitingForLockMinutes:3}") long maxWaitingForLockMinutes,
+              @Value("${mongock.maxTries:3}") int maxTries) {
+        SpringDataMongo3Driver driver = SpringDataMongo3Driver.withLockSetting(mongoTemplate, lockAcquiredForMinutes, maxWaitingForLockMinutes, maxTries);
+        return MongockSpring5.builder()
+            .setDriver(driver)
+            .addChangeLogsScanPackage("<%= packageName %>.config.dbmigrations")
+            .setSpringContext(springContext)
+            .buildInitializingBeanRunner();
     }
     <%_ } _%>
 }

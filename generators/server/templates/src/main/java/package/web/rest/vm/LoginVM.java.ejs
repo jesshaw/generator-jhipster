@@ -1,5 +1,5 @@
 <%#
- Copyright 2013-2019 the original author or authors from the JHipster project.
+ Copyright 2013-2020 the original author or authors from the JHipster project.
 
  This file is part of the JHipster project, see https://www.jhipster.tech/
  for more information.
@@ -16,7 +16,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -%>
-package <%=packageName%>.web.rest.vm;
+package <%= packageName %>.web.rest.vm;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -31,10 +31,10 @@ public class LoginVM {
     private String username;
 
     @NotNull
-    @Size(min = ManagedUserVM.PASSWORD_MIN_LENGTH, max = ManagedUserVM.PASSWORD_MAX_LENGTH)
+    @Size(min = 4, max = 100)
     private String password;
 
-    private Boolean rememberMe;
+    private boolean rememberMe;
 
     public String getUsername() {
         return username;
@@ -52,14 +52,15 @@ public class LoginVM {
         this.password = password;
     }
 
-    public Boolean isRememberMe() {
+    public boolean isRememberMe() {
         return rememberMe;
     }
 
-    public void setRememberMe(Boolean rememberMe) {
+    public void setRememberMe(boolean rememberMe) {
         this.rememberMe = rememberMe;
     }
 
+    // prettier-ignore
     @Override
     public String toString() {
         return "LoginVM{" +

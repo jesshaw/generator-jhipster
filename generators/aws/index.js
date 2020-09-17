@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2019 the original author or authors from the JHipster project.
+ * Copyright 2013-2020 the original author or authors from the JHipster project.
  *
  * This file is part of the JHipster project, see https://www.jhipster.tech/
  * for more information.
@@ -48,9 +48,11 @@ module.exports = class extends BaseGenerator {
                     this.environmentName = awsConfig.environmentName;
                     this.bucketName = awsConfig.bucketName;
                     this.instanceType = awsConfig.instanceType;
+                    this.customInstanceType = '';
                     this.awsRegion = awsConfig.awsRegion;
                     this.dbName = awsConfig.dbName;
                     this.dbInstanceClass = awsConfig.dbInstanceClass;
+                    this.customDBInstanceClass = '';
 
                     this.log(
                         chalk.green(
@@ -74,9 +76,9 @@ module.exports = class extends BaseGenerator {
                         this.dbEngine = 'postgres';
                         break;
                     default:
-                        this.error(chalk.red('Sorry deployment for this database is not possible'));
+                        this.error('Sorry deployment for this database is not possible');
                 }
-            }
+            },
         };
     }
 
@@ -102,9 +104,9 @@ module.exports = class extends BaseGenerator {
                     instanceType: this.instanceType,
                     awsRegion: this.awsRegion,
                     dbName: this.dbName,
-                    dbInstanceClass: this.dbInstanceClass
+                    dbInstanceClass: this.dbInstanceClass,
                 });
-            }
+            },
         };
     }
 
@@ -114,16 +116,16 @@ module.exports = class extends BaseGenerator {
                 const cb = this.async();
                 this.log(chalk.bold('Building application'));
 
-                const child = this.buildApplication(this.buildTool, 'prod', err => {
+                const child = this.buildApplication(this.buildTool, 'prod', true, err => {
                     if (err) {
-                        this.error(chalk.red(err));
+                        this.error(err);
                     } else {
                         cb();
                     }
                 });
 
                 child.stdout.on('data', data => {
-                    this.log(data.toString());
+                    process.stdout.write(data.toString());
                 });
             },
             createBucket() {
@@ -136,9 +138,9 @@ module.exports = class extends BaseGenerator {
                 s3.createBucket({ bucket: this.bucketName }, (err, data) => {
                     if (err) {
                         if (err.message == null) {
-                            this.error(chalk.red('The S3 bucket could not be created. Are you sure its name is not already used?'));
+                            this.error('The S3 bucket could not be created. Are you sure its name is not already used?');
                         } else {
-                            this.error(chalk.red(err.message));
+                            this.error(err.message);
                         }
                     } else {
                         this.log(data.message);
@@ -146,23 +148,23 @@ module.exports = class extends BaseGenerator {
                     }
                 });
             },
-            uploadJar() {
+            uploadWar() {
                 const cb = this.async();
                 this.log();
-                this.log(chalk.bold('Upload JAR to S3'));
+                this.log(chalk.bold('Upload WAR to S3'));
 
                 const s3 = this.awsFactory.getS3();
 
                 const params = {
                     bucket: this.bucketName,
-                    buildTool: this.buildTool
+                    buildTool: this.buildTool,
                 };
 
-                s3.uploadJar(params, (err, data) => {
+                s3.uploadWar(params, (err, data) => {
                     if (err) {
-                        this.error(chalk.red(err.message));
+                        this.error(err.message);
                     } else {
-                        this.jarKey = data.jarKey;
+                        this.warKey = data.warKey;
                         this.log(data.message);
                         cb();
                     }
@@ -180,12 +182,12 @@ module.exports = class extends BaseGenerator {
                     dbName: this.dbName,
                     dbEngine: this.dbEngine,
                     dbPassword: this.dbPassword,
-                    dbUsername: this.dbUsername
+                    dbUsername: this.dbUsername,
                 };
 
                 rds.createDatabase(params, (err, data) => {
                     if (err) {
-                        this.error(chalk.red(err.message));
+                        this.error(err.message);
                     } else {
                         this.log(data.message);
                         cb();
@@ -205,12 +207,12 @@ module.exports = class extends BaseGenerator {
 
                 const params = {
                     dbName: this.dbName,
-                    dbEngine: this.dbEngine
+                    dbEngine: this.dbEngine,
                 };
 
                 rds.createDatabaseUrl(params, (err, data) => {
                     if (err) {
-                        this.error(chalk.red(err.message));
+                        this.error(err.message);
                     } else {
                         this.dbUrl = data.dbUrl;
                         this.log(data.message);
@@ -225,7 +227,7 @@ module.exports = class extends BaseGenerator {
                 const iam = this.awsFactory.getIam();
                 iam.verifyRoles({}, err => {
                     if (err) {
-                        this.error(chalk.red(err.message));
+                        this.error(err.message);
                     } else {
                         cb();
                     }
@@ -241,23 +243,23 @@ module.exports = class extends BaseGenerator {
                 const params = {
                     applicationName: this.applicationName,
                     bucketName: this.bucketName,
-                    jarKey: this.jarKey,
+                    warKey: this.warKey,
                     environmentName: this.environmentName,
                     dbUrl: this.dbUrl,
                     dbUsername: this.dbUsername,
                     dbPassword: this.dbPassword,
-                    instanceType: this.instanceType
+                    instanceType: this.instanceType,
                 };
 
                 eb.createApplication(params, (err, data) => {
                     if (err) {
-                        this.error(chalk.red(err.message));
+                        this.error(err.message);
                     } else {
                         this.log(data.message);
                         cb();
                     }
                 });
-            }
+            },
         };
     }
 };

@@ -1,5 +1,5 @@
 <%#
- Copyright 2013-2019 the original author or authors from the JHipster project.
+ Copyright 2013-2020 the original author or authors from the JHipster project.
 
  This file is part of the JHipster project, see https://www.jhipster.tech/
  for more information.
@@ -16,15 +16,15 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -%>
-package <%=packageName%>.config.dbmigrations;
+package <%= packageName %>.config.dbmigrations;
 
-import <%=packageName%>.domain.Authority;
-import <%=packageName%>.domain.<%= asEntity('User') %>;
-import <%=packageName%>.security.AuthoritiesConstants;
+import <%= packageName %>.domain.Authority;
+import <%= packageName %>.domain.<%= asEntity('User') %>;
+import <%= packageName %>.security.AuthoritiesConstants;
 
-import com.github.mongobee.changeset.ChangeLog;
-import com.github.mongobee.changeset.ChangeSet;
-import org.springframework.data.mongodb.core.MongoTemplate;
+import com.github.cloudyrock.mongock.ChangeLog;
+import com.github.cloudyrock.mongock.ChangeSet;
+import com.github.cloudyrock.mongock.driver.mongodb.springdata.v3.decorator.impl.MongockTemplate;
 
 import java.time.Instant;
 
@@ -35,7 +35,7 @@ import java.time.Instant;
 public class InitialSetupMigration {
 
     @ChangeSet(order = "01", author = "initiator", id = "01-addAuthorities")
-    public void addAuthorities(MongoTemplate mongoTemplate) {
+    public void addAuthorities(MongockTemplate mongoTemplate) {
         Authority adminAuthority = new Authority();
         adminAuthority.setName(AuthoritiesConstants.ADMIN);
         Authority userAuthority = new Authority();
@@ -46,7 +46,7 @@ public class InitialSetupMigration {
     <%_ if (authenticationType !== 'oauth2') { _%>
 
     @ChangeSet(order = "02", author = "initiator", id = "02-addUsers")
-    public void addUsers(MongoTemplate mongoTemplate) {
+    public void addUsers(MongockTemplate mongoTemplate) {
         Authority adminAuthority = new Authority();
         adminAuthority.setName(AuthoritiesConstants.ADMIN);
         Authority userAuthority = new Authority();

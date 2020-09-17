@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2019 the original author or authors from the JHipster project.
+ * Copyright 2013-2020 the original author or authors from the JHipster project.
  *
  * This file is part of the JHipster project, see https://www.jhipster.tech/
  * for more information.
@@ -28,12 +28,11 @@ module.exports = {
     askForApps,
     askForClustersMode,
     askForMonitoring,
-    askForConsoleOptions,
     askForServiceDiscovery,
     askForAdminPassword,
     askForDockerRepositoryName,
     askForDockerPushCommand,
-    loadConfigs
+    loadConfigs,
 };
 
 /**
@@ -52,15 +51,15 @@ function askForApplicationType() {
             choices: [
                 {
                     value: 'monolith',
-                    name: 'Monolithic application'
+                    name: 'Monolithic application',
                 },
                 {
                     value: 'microservice',
-                    name: 'Microservice application'
-                }
+                    name: 'Microservice application',
+                },
             ],
-            default: 'monolith'
-        }
+            default: 'monolith',
+        },
     ];
 
     this.prompt(prompts).then(props => {
@@ -85,15 +84,15 @@ function askForGatewayType() {
             choices: [
                 {
                     value: 'zuul',
-                    name: 'JHipster gateway based on Netflix Zuul'
+                    name: 'JHipster gateway based on Netflix Zuul',
                 },
                 {
                     value: 'traefik',
-                    name: 'Traefik gateway (only works with Consul)'
-                }
+                    name: 'Traefik gateway (only works with Consul)',
+                },
             ],
-            default: 'zuul'
-        }
+            default: 'zuul',
+        },
     ];
 
     this.prompt(prompts).then(props => {
@@ -135,8 +134,8 @@ function askForPath() {
                     return true;
                 }
                 return `${path} is not a directory or doesn't exist`;
-            }
-        }
+            },
+        },
     ];
 
     this.prompt(prompts).then(props => {
@@ -178,8 +177,8 @@ function askForApps() {
             message: messageAskForApps,
             choices: this.appsFolders,
             default: this.defaultAppsFolders,
-            validate: input => (input.length === 0 ? 'Please choose at least one application' : true)
-        }
+            validate: input => (input.length === 0 ? 'Please choose at least one application' : true),
+        },
     ];
 
     this.prompt(prompts).then(props => {
@@ -212,8 +211,8 @@ function askForClustersMode() {
             name: 'clusteredDbApps',
             message: 'Which applications do you want to use with clustered databases (only available with MongoDB and Couchbase)?',
             choices: clusteredDbApps,
-            default: this.clusteredDbApps
-        }
+            default: this.clusteredDbApps,
+        },
     ];
 
     this.prompt(prompts).then(props => {
@@ -240,63 +239,19 @@ function askForMonitoring() {
             choices: [
                 {
                     value: 'no',
-                    name: 'No'
-                },
-                {
-                    value: 'elk',
-                    name:
-                        this.deploymentApplicationType === 'monolith'
-                            ? 'Yes, for logs and metrics with the JHipster Console (based on ELK)'
-                            : 'Yes, for logs and metrics with the JHipster Console (based on ELK and Zipkin)'
+                    name: 'No',
                 },
                 {
                     value: 'prometheus',
-                    name: 'Yes, for metrics only with Prometheus'
-                }
+                    name: 'Yes, for metrics only with Prometheus',
+                },
             ],
-            default: this.monitoring ? this.monitoring : 'no'
-        }
+            default: this.monitoring ? this.monitoring : 'no',
+        },
     ];
 
     this.prompt(prompts).then(props => {
         this.monitoring = props.monitoring;
-        done();
-    });
-}
-
-/**
- * Ask For Console Options
- */
-function askForConsoleOptions() {
-    if (this.regenerate) return;
-
-    if (this.monitoring !== 'elk') return;
-
-    const done = this.async();
-
-    const prompts = [
-        {
-            type: 'checkbox',
-            name: 'consoleOptions',
-            message:
-                'You have selected the JHipster Console which is based on the ELK stack and additional technologies, which one do you want to use ?',
-            choices: [
-                {
-                    value: 'curator',
-                    name: 'Curator, to help you curate and manage your Elasticsearch indices'
-                }
-            ],
-            default: this.monitoring
-        }
-    ];
-    if (this.deploymentApplicationType === 'microservice') {
-        prompts[0].choices.push({
-            value: 'zipkin',
-            name: 'Zipkin, for distributed tracing (only compatible with JHipster >= v4.2.0)'
-        });
-    }
-    this.prompt(prompts).then(props => {
-        this.consoleOptions = props.consoleOptions;
         done();
     });
 }
@@ -314,7 +269,7 @@ function askForServiceDiscovery() {
         if (appConfig.serviceDiscoveryType) {
             serviceDiscoveryEnabledApps.push({
                 baseName: appConfig.baseName,
-                serviceDiscoveryType: appConfig.serviceDiscoveryType
+                serviceDiscoveryType: appConfig.serviceDiscoveryType,
             });
         }
     });
@@ -348,19 +303,19 @@ function askForServiceDiscovery() {
                 choices: [
                     {
                         value: 'eureka',
-                        name: 'JHipster Registry'
+                        name: 'JHipster Registry',
                     },
                     {
                         value: 'consul',
-                        name: 'Consul'
+                        name: 'Consul',
                     },
                     {
                         value: false,
-                        name: 'No Service Discovery and Configuration'
-                    }
+                        name: 'No Service Discovery and Configuration',
+                    },
                 ],
-                default: 'eureka'
-            }
+                default: 'eureka',
+            },
         ];
 
         this.prompt(prompts).then(props => {
@@ -384,8 +339,8 @@ function askForAdminPassword() {
             name: 'adminPassword',
             message: 'Enter the admin password used to secure the JHipster Registry',
             default: 'admin',
-            validate: input => (input.length < 5 ? 'The password must have at least 5 characters' : true)
-        }
+            validate: input => (input.length < 5 ? 'The password must have at least 5 characters' : true),
+        },
     ];
 
     this.prompt(prompts).then(props => {
@@ -408,8 +363,8 @@ function askForDockerRepositoryName() {
             type: 'input',
             name: 'dockerRepositoryName',
             message: 'What should we use for the base Docker repository name?',
-            default: this.dockerRepositoryName
-        }
+            default: this.dockerRepositoryName,
+        },
     ];
 
     this.prompt(prompts).then(props => {
@@ -431,8 +386,8 @@ function askForDockerPushCommand() {
             type: 'input',
             name: 'dockerPushCommand',
             message: 'What command should we use for push Docker image to repository?',
-            default: this.dockerPushCommand ? this.dockerPushCommand : 'docker push'
-        }
+            default: this.dockerPushCommand ? this.dockerPushCommand : 'docker push',
+        },
     ];
 
     this.prompt(prompts).then(props => {

@@ -1,25 +1,24 @@
 <%#
- Copyright 2013-2019 the original author or authors from the JHipster project.
+Copyright 2013-2020 the original author or authors from the JHipster project.
 
- This file is part of the JHipster project, see https://www.jhipster.tech/
- for more information.
+This file is part of the JHipster project, see https://www.jhipster.tech/
+for more information.
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 -%>
-<%_ var optionsForwarder = clientPackageManager == 'yarn' ? '' : '-- ' _%>
 {
   "name": "<%= dasherizedBaseName %>",
-  "version": "0.0.0",
+  "version": "0.0.1-SNAPSHOT",
   "description": "Description for <%= baseName %>",
   "private": true,
   "license": "UNLICENSED",
@@ -27,164 +26,186 @@
     "node_modules"
   ],
   "dependencies": {
-    "@angular/common": "7.2.12",
-    "@angular/compiler": "7.2.12",
-    "@angular/core": "7.2.12",
-    "@angular/forms": "7.2.12",
-    "@angular/platform-browser": "7.2.12",
-    "@angular/platform-browser-dynamic": "7.2.12",
-    "@angular/router": "7.2.12",
-    "@fortawesome/angular-fontawesome": "0.3.0",
-    "@fortawesome/fontawesome-svg-core": "1.2.17",
-    "@fortawesome/free-solid-svg-icons": "5.8.1",
-    "@ng-bootstrap/ng-bootstrap": "4.1.1",
-    "@ngx-translate/core": "11.0.1",
-    "@ngx-translate/http-loader": "4.0.0",
-    "bootstrap": "4.3.1",
+    "@angular/common": "VERSION_MANAGED_BY_CLIENT_ANGULAR",
+    "@angular/compiler": "VERSION_MANAGED_BY_CLIENT_ANGULAR#dependencies#@angular/common",
+    "@angular/core": "VERSION_MANAGED_BY_CLIENT_ANGULAR#dependencies#@angular/common",
+    "@angular/forms": "VERSION_MANAGED_BY_CLIENT_ANGULAR#dependencies#@angular/common",
+    "@angular/localize": "VERSION_MANAGED_BY_CLIENT_ANGULAR#dependencies#@angular/common",
+    "@angular/platform-browser": "VERSION_MANAGED_BY_CLIENT_ANGULAR#dependencies#@angular/common",
+    "@angular/platform-browser-dynamic": "VERSION_MANAGED_BY_CLIENT_ANGULAR#dependencies#@angular/common",
+    "@angular/router": "VERSION_MANAGED_BY_CLIENT_ANGULAR#dependencies#@angular/common",
+    "@fortawesome/angular-fontawesome": "0.7.0",
+    "@fortawesome/fontawesome-svg-core": "1.2.30",
+    "@fortawesome/free-solid-svg-icons": "5.14.0",
+    "@ng-bootstrap/ng-bootstrap": "7.0.0",
+    "@ngx-translate/core": "12.1.2",
+    "@ngx-translate/http-loader": "5.0.0",
+    "bootstrap": "VERSION_MANAGED_BY_CLIENT_ANGULAR",
     <%_ if (clientTheme !== 'none') { _%>
-    "bootswatch": "4.2.1",
+    "bootswatch": "VERSION_MANAGED_BY_CLIENT_ANGULAR#dependencies#bootstrap",
     <%_ } _%>
-    "core-js": "2.6.5",
-    "moment": "2.24.0",
-    "ng-jhipster": "0.9.3",
-    "ngx-cookie": "4.0.2",
-    "ngx-infinite-scroll": "7.1.0",
-    "ngx-webstorage": "3.0.2",
-    "rxjs": "6.4.0",
-    "swagger-ui": "2.2.10",
+    "moment": "2.27.0",
+    "ng-jhipster": "0.15.0",
+    "ngx-cookie-service": "3.0.4",
+    "ngx-infinite-scroll": "9.0.0",
+    "ngx-webstorage": "5.0.0",
+    "rxjs": "6.6.3",
+    "swagger-ui-dist": "3.25.1",
     <%_ if (websocket === 'spring-websocket') { _%>
-    "sockjs-client": "1.3.0",
+    "sockjs-client": "1.4.0",
     "webstomp-client": "1.2.6",
     <%_ } _%>
-    "tslib": "1.9.3",
-    "zone.js": "0.8.29"
+    <%_ if (skipServer) { _%>
+    "sonar-scanner": "3.1.0",
+    <%_ } _%>
+    "tslib": "2.0.0",
+    "zone.js": "0.10.3"
   },
   "devDependencies": {
-    "@angular/cli": "7.3.8",
-    "@angular/compiler-cli": "7.2.12",
-    "@ngtools/webpack": "7.3.8",
+    "@angular/cli": "VERSION_MANAGED_BY_CLIENT_ANGULAR",
+    "@angular/compiler-cli": "VERSION_MANAGED_BY_CLIENT_ANGULAR#dependencies#@angular/common",
+    "@ngtools/webpack": "VERSION_MANAGED_BY_CLIENT_ANGULAR#devDependencies#@angular/cli",
+    "@openapitools/openapi-generator-cli": "1.0.13-4.3.1",
     <%_ if (protractorTests) { _%>
-    "@types/chai": "4.1.7",
-    "@types/chai-string": "1.4.1",
+    "@types/chai": "4.2.11",
+    "@types/chai-string": "1.4.2",
     <%_ } _%>
-    "@types/jest": "24.0.11",
+    "@types/jest": "26.0.10",
     <%_ if (protractorTests) { _%>
-    "@types/mocha": "5.2.6",
+    "@types/mocha": "7.0.2",
     <%_ } _%>
-    "@types/node": "10.12.27",
+    "@types/node": "13.13.4",
     <%_ if (protractorTests) { _%>
-    "@types/selenium-webdriver": "3.0.15",
+    "@types/selenium-webdriver": "4.0.9",
     <%_ } _%>
-    "angular-router-loader": "0.8.5",
-    "angular2-template-loader": "0.6.2",
-    "autoprefixer": "9.5.0",
-    "base-href-webpack-plugin": "2.0.0",
-    "browser-sync": "2.26.3",
+    <%_ if (websocket === 'spring-websocket') { _%>
+    "@types/sockjs-client": "1.1.1",
+    <%_ } _%>
+    "@typescript-eslint/eslint-plugin": "2.30.0",
+    "@typescript-eslint/eslint-plugin-tslint": "2.30.0",
+    "@typescript-eslint/parser": "2.30.0",
+    "autoprefixer": "9.8.4",
+    "browser-sync": "2.26.7",
     "browser-sync-webpack-plugin": "2.2.2",
-    "cache-loader": "2.0.1",
     <%_ if (protractorTests) { _%>
     "chai": "4.2.0",
     "chai-as-promised": "7.1.1",
     "chai-string": "1.5.0",
     <%_ } _%>
-    "codelyzer": "5.0.0",
-    "copy-webpack-plugin": "5.0.2",
-    "css-loader": "2.1.1",
-    "file-loader": "3.0.1",
-    "fork-ts-checker-webpack-plugin": "1.0.1",
+    "codelyzer": "5.2.2",
+    "copy-webpack-plugin": "6.0.2",
+    "css-loader": "3.6.0",
+    "eslint": "6.8.0",
+    "eslint-config-jhipster": "0.0.1",
+    "eslint-config-prettier": "6.11.0",
+    "eslint-loader": "4.0.2",
+    "file-loader": "6.0.0",
     "friendly-errors-webpack-plugin": "1.7.0",
+    <%_ if (!skipJhipsterDependencies) { _%>
     "generator-jhipster": "<%= packagejs.version %>",
-    "html-loader": "0.5.5",
-    "html-webpack-plugin": "3.2.0",
+        <%_ otherModules.forEach(module => { _%>
+    "<%= module.name %>": "<%= module.version %>",
+        <%_ });
+    } _%>
+    "html-loader": "1.1.0",
+    "html-webpack-plugin": "4.3.0",
     <%_ if (!skipCommitHook) { _%>
-    "husky": "1.3.1",
+    "husky": "<%= HUSKY_VERSION %>",
     <%_ } _%>
-    "jest": "24.7.1",
-    "jest-junit": "6.3.0",
-    "jest-preset-angular": "7.0.1",
+    "jest": "26.4.2",
+    "jest-date-mock": "1.0.8",
+    "jest-junit": "11.1.0",
+    "jest-preset-angular": "8.3.1",
     "jest-sonar-reporter": "2.0.0",
     <%_ if (!skipCommitHook) { _%>
-    "lint-staged": "8.1.5",
+    "lint-staged": "<%= LINT_STAGED_VERSION %>",
     <%_ } _%>
     <%_ if (enableTranslation) { _%>
-    "merge-jsons-webpack-plugin": "1.0.18",
+    "merge-jsons-webpack-plugin": "1.0.21",
     <%_ } _%>
-    "mini-css-extract-plugin": "0.5.0",
+    "mini-css-extract-plugin": "0.9.0",
     <%_ if (protractorTests) { _%>
-    "mocha": "6.0.2",
+    "mocha": "8.0.1",
     <%_ } _%>
-    "moment-locales-webpack-plugin": "1.0.7",
-    "optimize-css-assets-webpack-plugin": "5.0.1",
+    "moment-locales-webpack-plugin": "1.2.0",
+    "optimize-css-assets-webpack-plugin": "5.0.3",
     "postcss-loader": "3.0.0",
-    "prettier": "1.16.4",
-    <%_ if (protractorTests) { _%>
-    "protractor": "5.4.2",
+    "prettier": "<%= PRETTIER_VERSION %>",
+    <%_ if (!skipServer) { _%>
+    "prettier-plugin-java": "<%= PRETTIER_JAVA_VERSION %>",
     <%_ } _%>
-    "reflect-metadata": "0.1.13",
-    "rimraf": "2.6.3",
-    "sass": "1.17.4",
-    "sass-loader": "7.1.0",
+    <%_ if (protractorTests) { _%>
+    "protractor": "7.0.0",
+    <%_ } _%>
+    "rimraf": "3.0.2",
+    "sass": "1.26.9",
+    "sass-loader": "8.0.2",
     "simple-progress-webpack-plugin": "1.1.2",
-    "style-loader": "0.23.1",
-    "terser-webpack-plugin": "1.2.3",
-    "thread-loader": "2.1.2",
-    "to-string-loader": "1.1.5",
-    "ts-loader": "5.3.3",
+    "style-loader": "1.2.1",
+    "terser-webpack-plugin": "3.0.6",
+    "thread-loader": "2.1.3",
+    "to-string-loader": "1.1.6",
+    "ts-loader": "7.0.5",
     <%_ if (protractorTests) { _%>
-    "ts-node": "8.0.2",
+    "ts-node": "8.10.2",
     <%_ } _%>
-    "tslint": "5.15.0",
-    "tslint-config-prettier": "1.18.0",
-    "tslint-loader": "3.5.4",
-    "typescript": "3.2.4",
-    <%_ otherModules.forEach(module => { _%>
-    "<%= module.name %>": "<%= module.version %>",
-    <%_ }); _%>
-    "webpack": "4.29.6",
-    "webpack-cli": "3.3.0",
-    "webpack-dev-server": "3.2.1",
-    "webpack-merge": "4.2.1",
-    "webpack-notifier": "1.7.0",
-    "webpack-visualizer-plugin": "0.1.11",
-    "workbox-webpack-plugin": "3.6.3",
-    "write-file-webpack-plugin": "4.5.0"<% if (buildTool === 'maven') { %>,
-    "xml2js": "0.4.19"
+    <%_ if (cypressTests) { _%>
+    "cypress": "VERSION_MANAGED_BY_CLIENT_COMMON",
     <%_ } _%>
+    "tslint": "6.1.2",
+    "typescript": "VERSION_MANAGED_BY_CLIENT_COMMON",
+    <%_ if (protractorTests || cypressTests) { _%>
+    "webdriver-manager": "12.1.7",
+    <%_ } _%>
+    "webpack": "VERSION_MANAGED_BY_CLIENT_ANGULAR",
+    "webpack-bundle-analyzer": "3.8.0",
+    "webpack-cli": "3.3.12",
+    "webpack-dev-server": "3.11.0",
+    "webpack-merge": "5.0.9",
+    "webpack-notifier": "1.8.0",
+    "workbox-webpack-plugin": "5.1.3",
+    "write-file-webpack-plugin": "4.5.1"
   },
   "engines": {
-    "node": ">=8.9.0"<% if (clientPackageManager === 'yarn') { %>,
-    "yarn": ">=1.3.2"<% } %>
+    "node": ">=<%= NODE_VERSION %>"
   },
-  <%_ if (!skipCommitHook) { _%>
-  "lint-staged": {
-    "{,src/**/}*.{md,json,ts,css,scss,yml}": [
-      "prettier --write",
-      "git add"
-    ]
-  },
-  <%_ } _%>
   "scripts": {
-    "prettier:format": "prettier --write \"{,src/**/}*.{md,json,ts,css,scss,yml}\"",
-    "lint": "tslint --project tsconfig.json -e 'node_modules/**'",
-    "lint:fix": "<%= clientPackageManager %> run lint <%= optionsForwarder %>--fix",
-    "ngc": "ngc -p tsconfig-aot.json",
-    "cleanup": "rimraf <%= DIST_DIR %> <%= AOT_DIR %>",
+    "prettier:format": "prettier --write \"{,src/**/,webpack/}*.{<%= getPrettierExtensions() %>}\"",
+    "lint": "eslint . --ext .js,.ts",
+    "lint:fix": "<%= clientPackageManager %> run lint -- --fix",
+    "ngc": "ngc -p tsconfig.app.json",
+    "cleanup": "rimraf <%= DIST_DIR %>",
     "clean-www": "rimraf <%= DIST_DIR %>app/{src,<%= BUILD_DIR %>}",
+    <%_ if (protractorTests && !cypressTests) { _%>
+    "e2e": "<%= clientPackageManager %> run e2e:protractor",
+    <%_ } else if ((cypressTests && !protractorTests) || (protractorTests && cypressTests)) {  _%>
+    "e2e": "<%= clientPackageManager %> run e2e:cypress",
+    <%_ } _%>
     <%_ if (protractorTests) { _%>
-    "e2e": "protractor <%= TEST_SRC_DIR %>protractor.conf.js",
-    "postinstall": "webdriver-manager update --gecko false",
+    "e2e:protractor": "protractor <%= TEST_SRC_DIR %>protractor.conf.js",
+    <%_ } _%>
+    <%_ if (cypressTests) { _%>
+    "e2e:cypress": "cypress run --browser chrome --headless",
+    "cypress": "cypress open",
+    <%_ } _%>
+    <%_ if (protractorTests || cypressTests) { _%>
+    "postinstall": "<%= clientPackageManager %> run e2e:update-webdriver",
+    "e2e:update-webdriver": "webdriver-manager update --gecko false",
     <%_ } _%>
     "start": "<%= clientPackageManager %> run webpack:dev",
-    "start-tls": "<%= clientPackageManager %> run webpack:dev <%= optionsForwarder %>--env.tls",
+    <%_ if (skipServer) { _%>
+    "sonar": "sonar-scanner",
+    <%_ } _%>
+    "start-tls": "<%= clientPackageManager %> run webpack:dev -- --env.tls",
     "serve": "<%= clientPackageManager %> run start",
     "build": "<%= clientPackageManager %> run webpack:prod",
-    "test": "<%= clientPackageManager %> run lint && jest --coverage --logHeapUsage -w=2 --config src/test/javascript/jest.conf.js",
-    "test:watch": "<%= clientPackageManager %> run test <%= optionsForwarder %>--watch",
-    "webpack:dev": "<%= clientPackageManager %> run webpack-dev-server <%= optionsForwarder %>--config webpack/webpack.dev.js --inline --hot --port=9060 --watch-content-base --env.stats=minimal",
-    "webpack:dev-verbose": "<%= clientPackageManager %> run webpack-dev-server <%= optionsForwarder %>--config webpack/webpack.dev.js --inline --hot --port=9060 --watch-content-base --profile --progress --env.stats=normal",
-    "webpack:build:main": "<%= clientPackageManager %> run webpack <%= optionsForwarder %>--config webpack/webpack.dev.js --env.stats=minimal",
+    "test": "<%= clientPackageManager %> run lint && jest --coverage --logHeapUsage -w=2 --config <%= CLIENT_TEST_SRC_DIR %>jest.conf.js",
+    "test:watch": "<%= clientPackageManager %> run test -- --watch",
+    "webpack:dev": "<%= clientPackageManager %> run webpack-dev-server -- --config webpack/webpack.dev.js --inline --hot --port=9060 --watch-content-base --env.stats=minimal",
+    "webpack:dev-verbose": "<%= clientPackageManager %> run webpack-dev-server -- --config webpack/webpack.dev.js --inline --hot --port=9060 --watch-content-base --profile --progress --env.stats=normal",
+    "webpack:build:main": "<%= clientPackageManager %> run webpack -- --config webpack/webpack.dev.js --env.stats=minimal",
     "webpack:build": "<%= clientPackageManager %> run cleanup && <%= clientPackageManager %> run webpack:build:main",
-    "webpack:prod:main": "<%= clientPackageManager %> run webpack <%= optionsForwarder %>--config webpack/webpack.prod.js --profile",
+    "webpack:prod:main": "<%= clientPackageManager %> run webpack -- --config webpack/webpack.prod.js --profile",
     "webpack:prod": "<%= clientPackageManager %> run cleanup && <%= clientPackageManager %> run webpack:prod:main && <%= clientPackageManager %> run clean-www",
     "webpack:test": "<%= clientPackageManager %> run test",
     "webpack-dev-server": "node --max_old_space_size=4096 node_modules/webpack-dev-server/bin/webpack-dev-server.js",

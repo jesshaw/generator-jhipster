@@ -1,5 +1,5 @@
 <%#
- Copyright 2013-2019 the original author or authors from the JHipster project.
+ Copyright 2013-2020 the original author or authors from the JHipster project.
 
  This file is part of the JHipster project, see https://www.jhipster.tech/
  for more information.
@@ -33,6 +33,18 @@ spec:
         app: <%= app.baseName.toLowerCase() %>
         version: "v1"
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - <%= app.baseName.toLowerCase() %>
+                topologyKey: kubernetes.io/hostname
+              weight: 100
       initContainers:
         - name: init-ds
           image: busybox:latest
@@ -108,13 +120,17 @@ spec:
               name: jwt-secret
               key: secret
         <%_ } _%>
-        <%_ if (app.prodDatabaseType === 'mysql') { _%>
+        <%_ if (app.prodDatabaseType === 'mysql' || app.prodDatabaseType === 'mariadb') { _%>
         - name: SPRING_DATASOURCE_URL
-          value: jdbc:mysql://<%= app.baseName.toLowerCase() %>-mysql.<%= kubernetesNamespace %>.svc.cluster.local:3306/<%= app.baseName.toLowerCase() %>?useUnicode=true&characterEncoding=utf8&useSSL=false
+          value: <%- getJDBCUrl(app.prodDatabaseType, { hostname: `${app.baseName.toLowerCase()}-${app.prodDatabaseType}.${kubernetesNamespace}.svc.cluster.local`, databaseName: app.baseName.toLowerCase() }) %>
+        - name: SPRING_LIQUIBASE_URL
+          value: <%- getJDBCUrl(app.prodDatabaseType, { hostname: `${app.baseName.toLowerCase()}-${app.prodDatabaseType}.${kubernetesNamespace}.svc.cluster.local`, databaseName: app.baseName.toLowerCase() }) %>
+            <%_ if (reactive) { _%>
+        - name: SPRING_R2DBC_URL
+          value: <%- getR2DBCUrl(app.prodDatabaseType, { hostname: `${app.baseName.toLowerCase()}-${app.prodDatabaseType}.${kubernetesNamespace}.svc.cluster.local`, databaseName: app.baseName.toLowerCase() }) %>
+            <%_ } _%>
         <%_ } _%>
         <%_ if (app.prodDatabaseType === 'mariadb') { _%>
-        - name: SPRING_DATASOURCE_URL
-          value: jdbc:mariadb://<%= app.baseName.toLowerCase() %>-mariadb.<%= kubernetesNamespace %>.svc.cluster.local:3306/<%= app.baseName.toLowerCase() %>
         - name: SPRING_DATASOURCE_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -123,14 +139,20 @@ spec:
         <%_ } _%>
         <%_ if (app.prodDatabaseType === 'postgresql') { _%>
         - name: SPRING_DATASOURCE_URL
-          value: jdbc:postgresql://<%= app.baseName.toLowerCase() %>-postgresql.<%= kubernetesNamespace %>.svc.cluster.local:5432/<%= app.baseName %>
+          value: <%- getJDBCUrl(app.prodDatabaseType, { hostname: `${app.baseName.toLowerCase()}-${app.prodDatabaseType}.${kubernetesNamespace}.svc.cluster.local`, databaseName: app.baseName }) %>
         - name: SPRING_DATASOURCE_USERNAME
-          value: <%= app.baseName.toLowerCase() %>
+          value: <%= app.baseName %>
         - name: SPRING_DATASOURCE_PASSWORD
           valueFrom:
             secretKeyRef:
               name: <%= app.baseName.toLowerCase() %>-postgresql
               key: postgresql-password
+        - name: SPRING_LIQUIBASE_URL
+          value: <%- getJDBCUrl(app.prodDatabaseType, { hostname: `${app.baseName.toLowerCase()}-${app.prodDatabaseType}.${kubernetesNamespace}.svc.cluster.local`, databaseName: app.baseName.toLowerCase() }) %>
+            <%_ if (reactive) { _%>
+        - name: SPRING_R2DBC_URL
+          value: <%- getR2DBCUrl(app.prodDatabaseType, { hostname: `${app.baseName.toLowerCase()}-${app.prodDatabaseType}.${kubernetesNamespace}.svc.cluster.local`, databaseName: app.baseName.toLowerCase() }) %>
+            <%_ } _%>
         <%_ } _%>
         <%_ if (app.prodDatabaseType === 'mongodb') { _%>
         - name: SPRING_DATA_MONGODB_DATABASE
@@ -145,30 +167,26 @@ spec:
           value: <%= app.baseName.toLowerCase() %>
         <%_ } _%>
         <%_ if (app.searchEngine === 'elasticsearch') { _%>
-        - name: SPRING_DATA_JEST_URI
-          value: http://<%= app.baseName.toLowerCase() %>-elasticsearch.<%= kubernetesNamespace %>.svc.cluster.local:9200
         - name: SPRING_ELASTICSEARCH_REST_URIS
           value: http://<%= app.baseName.toLowerCase() %>-elasticsearch.<%= kubernetesNamespace %>.svc.cluster.local:9200
         <%_ } _%>
         <%_ if (app.messageBroker === 'kafka') { _%>
-        - name: SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS
-          value: jhipster-kafka.<%= kubernetesNamespace %>.svc.cluster.local
-        - name: SPRING_CLOUD_STREAM_KAFKA_BINDER_ZK_NODES
-          value: jhipster-zookeeper.<%= kubernetesNamespace %>.svc.cluster.local
-        <%_ } _%>
-        <%_ if (monitoring === 'elk') { _%>
-        - name: JHIPSTER_METRICS_LOGS_ENABLED
-          value: 'true'
-        - name: JHIPSTER_LOGGING_LOGSTASH_ENABLED
-          value: 'true'
-        - name: JHIPSTER_LOGGING_LOGSTASH_HOST
-          value: jhipster-logstash
-            <%_ if (deploymentApplicationType === 'microservice') { _%>
-        - name: SPRING_ZIPKIN_ENABLED
-          value: "true"
-        - name: SPRING_ZIPKIN_BASE_URL
-          value: http://jhipster-zipkin
-            <%_ } _%>
+        - name: KAFKA_CONSUMER_KEY_DESERIALIZER
+          value: 'org.apache.kafka.common.serialization.StringDeserializer'
+        - name: KAFKA_CONSUMER_VALUE_DESERIALIZER
+          value: 'org.apache.kafka.common.serialization.StringDeserializer'
+        - name: KAFKA_CONSUMER_BOOTSTRAP_SERVERS
+          value: 'jhipster-kafka.<%= kubernetesNamespace %>.svc.cluster.local:9092'
+        - name: KAFKA_CONSUMER_GROUP_ID
+          value: '<%= app.baseName.toLowerCase() %>'
+        - name: KAFKA_CONSUMER_AUTO_OFFSET_RESET
+          value: 'earliest'
+        - name: KAFKA_PRODUCER_BOOTSTRAP_SERVERS
+          value: 'jhipster-kafka.<%= kubernetesNamespace %>.svc.cluster.local:9092'
+        - name: KAFKA_PRODUCER_KEY_DESERIALIZER
+          value: 'org.apache.kafka.common.serialization.StringDeserializer'
+        - name: KAFKA_PRODUCER_VALUE_DESERIALIZER
+          value: 'org.apache.kafka.common.serialization.StringDeserializer'
         <%_ } _%>
         <%_ if (monitoring === 'prometheus') { _%>
         - name: MANAGEMENT_METRICS_EXPORT_PROMETHEUS_ENABLED
@@ -182,6 +200,8 @@ spec:
         <%_ } _%>
         - name: JAVA_OPTS
           value: " -Xmx256m -Xms256m"
+        - name: SERVER_SHUTDOWN
+          value: graceful
         resources:
           requests:
             memory: "512Mi"
@@ -194,13 +214,13 @@ spec:
           containerPort: <%= app.serverPort %>
         readinessProbe:
           httpGet:
-            path: <%= app.applicationType === 'microservice' && !app.serviceDiscoveryType ? "/" + app.baseName.toLowerCase() : "" %>/management/health
+            path: /management/health/readiness
             port: http
           initialDelaySeconds: 20
           periodSeconds: 15
           failureThreshold: 6
         livenessProbe:
           httpGet:
-            path: <%= app.applicationType === 'microservice' && !app.serviceDiscoveryType ? "/" + app.baseName.toLowerCase() : "" %>/management/health
+            path: /management/health/liveness
             port: http
           initialDelaySeconds: 120

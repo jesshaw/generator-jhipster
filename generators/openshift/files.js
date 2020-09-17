@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2019 the original author or authors from the JHipster project.
+ * Copyright 2013-2020 the original author or authors from the JHipster project.
  *
  * This file is part of the JHipster project, see https://www.jhipster.tech/
  * for more information.
@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 module.exports = {
-    writeFiles
+    writeFiles,
 };
 
 function writeFiles() {
@@ -56,12 +56,6 @@ function writeFiles() {
             }
         },
 
-        writeElkFiles() {
-            if (this.monitoring !== 'elk') return;
-
-            this.template('monitoring/jhipster-monitoring.yml.ejs', `${this.directoryPath}/ocp/monitoring/jhipster-monitoring.yml`);
-        },
-
         writePrometheusFiles() {
             if (this.monitoring !== 'prometheus') return;
 
@@ -77,6 +71,6 @@ function writeFiles() {
 
         writeConfigRunFile() {
             this.template('apply.sh.ejs', `${this.directoryPath}/ocp/ocp-apply.sh`);
-        }
+        },
     };
 }

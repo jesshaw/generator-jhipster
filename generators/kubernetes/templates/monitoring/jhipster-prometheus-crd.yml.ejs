@@ -1,5 +1,5 @@
 <%#
- Copyright 2013-2019 the original author or authors from the JHipster project.
+ Copyright 2013-2020 the original author or authors from the JHipster project.
 
  This file is part of the JHipster project, see https://www.jhipster.tech/
  for more information.
@@ -39,6 +39,7 @@ rules:
   - alertmanagers
   - prometheuses
   - servicemonitors
+  - prometheusrules
   verbs:
   - "*"
 - apiGroups:
@@ -67,7 +68,7 @@ rules:
 - apiGroups: [""]
   resources:
   - namespaces
-  verbs: ["list"]
+  verbs: ["list", "watch"]
 ---
 apiVersion: <%= KUBERNETES_CORE_API_VERSION  %>
 kind: ServiceAccount

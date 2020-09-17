@@ -1,5 +1,7 @@
 const assert = require('yeoman-assert');
+const sinon = require('sinon');
 const utils = require('../generators/utils');
+const { prepareTempDir } = require('./utils/utils');
 
 describe('JHipster Utils', () => {
     describe('::getJavadoc', () => {
@@ -45,21 +47,152 @@ describe('JHipster Utils', () => {
             assert.objectContent(dst, src);
         });
     });
-    describe('::buildEnumFunction', () => {
-        it('describes all the properties of the entity', () => {
-            const packageName = 'com.package';
-            const angularAppName = 'myApp';
-            const clientRootFolder = 'root';
-            const entity = { enumName: 'entityName', fieldValues: 'field1, field2' };
-            const infos = utils.buildEnumInfo(entity, angularAppName, packageName, clientRootFolder);
-            assert.objectContent(infos, { packageName, angularAppName, clientRootFolder: `${clientRootFolder}-` });
+    describe('::getEnumInfo', () => {
+        describe('when passing field data', () => {
+            let enumInfo;
+
+            before(() => {
+                const clientRootFolder = 'root';
+                const field = { enumName: 'fieldName', fieldType: 'BigLetters', fieldValues: 'AAA, BBB' };
+                enumInfo = utils.getEnumInfo(field, clientRootFolder);
+            });
+
+            it("returns the enum's name", () => {
+                assert.strictEqual(enumInfo.enumName, 'BigLetters');
+            });
+            it("returns the enum's instance", () => {
+                assert.strictEqual(enumInfo.enumInstance, 'bigLetters');
+            });
+            it('returns the enums values', () => {
+                assert.deepStrictEqual(enumInfo.enums, ['AAA', 'BBB']);
+            });
+        });
+        describe("when the enums don't have custom values", () => {
+            let enumInfo;
+
+            before(() => {
+                const clientRootFolder = 'root';
+                const field = { enumName: 'fieldName', fieldValues: 'AAA, BBB' };
+                enumInfo = utils.getEnumInfo(field, clientRootFolder);
+            });
+
+            it('returns whether there are custom enums', () => {
+                assert.strictEqual(enumInfo.withoutCustomValues, true);
+                assert.strictEqual(enumInfo.withSomeCustomValues, false);
+                assert.strictEqual(enumInfo.withCustomValues, false);
+            });
+            it('returns the enums values', () => {
+                assert.deepStrictEqual(enumInfo.enumValues, [
+                    { name: 'AAA', value: 'AAA' },
+                    { name: 'BBB', value: 'BBB' },
+                ]);
+            });
+        });
+        describe('when some enums have custom values', () => {
+            let enumInfo;
+
+            before(() => {
+                const clientRootFolder = 'root';
+                const field = { enumName: 'fieldName', fieldValues: 'AAA(aaa), BBB' };
+                enumInfo = utils.getEnumInfo(field, clientRootFolder);
+            });
+
+            it('returns whether there are custom enums', () => {
+                assert.strictEqual(enumInfo.withoutCustomValues, false);
+                assert.strictEqual(enumInfo.withSomeCustomValues, true);
+                assert.strictEqual(enumInfo.withCustomValues, false);
+            });
+            it('returns the enums values', () => {
+                assert.deepStrictEqual(enumInfo.enumValues, [
+                    {
+                        name: 'AAA',
+                        value: 'aaa',
+                    },
+                    { name: 'BBB', value: 'BBB' },
+                ]);
+            });
+        });
+        describe('when all the enums have custom values', () => {
+            describe('without spaces inside them', () => {
+                let enumInfo;
+
+                before(() => {
+                    const clientRootFolder = 'root';
+                    const field = { enumName: 'fieldName', fieldValues: 'AAA(aaa), BBB(bbb)' };
+                    enumInfo = utils.getEnumInfo(field, clientRootFolder);
+                });
+
+                it('returns whether there are custom enums', () => {
+                    assert.strictEqual(enumInfo.withoutCustomValues, false);
+                    assert.strictEqual(enumInfo.withSomeCustomValues, false);
+                    assert.strictEqual(enumInfo.withCustomValues, true);
+                });
+                it('returns the enums values', () => {
+                    assert.deepStrictEqual(enumInfo.enumValues, [
+                        {
+                            name: 'AAA',
+                            value: 'aaa',
+                        },
+                        { name: 'BBB', value: 'bbb' },
+                    ]);
+                });
+            });
+            describe('with spaces inside them', () => {
+                let enumInfo;
+
+                before(() => {
+                    const clientRootFolder = 'root';
+                    const field = { enumName: 'fieldName', fieldValues: 'AAA(aaa), BBB(bbb and b)' };
+                    enumInfo = utils.getEnumInfo(field, clientRootFolder);
+                });
+
+                it('returns whether there are custom enums', () => {
+                    assert.strictEqual(enumInfo.withoutCustomValues, false);
+                    assert.strictEqual(enumInfo.withSomeCustomValues, false);
+                    assert.strictEqual(enumInfo.withCustomValues, true);
+                });
+                it('returns the enums values', () => {
+                    assert.deepStrictEqual(enumInfo.enumValues, [
+                        {
+                            name: 'AAA',
+                            value: 'aaa',
+                        },
+                        { name: 'BBB', value: 'bbb and b' },
+                    ]);
+                });
+            });
+        });
+        describe('when not passing a client root folder', () => {
+            let enumInfo;
+
+            before(() => {
+                const field = { enumName: 'fieldName', fieldValues: 'AAA, BBB' };
+                enumInfo = utils.getEnumInfo(field);
+            });
+
+            it('returns an empty string for the clientRootFolder property', () => {
+                assert.strictEqual(enumInfo.clientRootFolder, '');
+            });
+        });
+        describe('when passing a client root folder', () => {
+            let enumInfo;
+
+            before(() => {
+                const field = { enumName: 'fieldName', fieldValues: 'AAA, BBB' };
+                const clientRootFolder = 'root';
+                enumInfo = utils.getEnumInfo(field, clientRootFolder);
+            });
+
+            it('returns the clientRootFolder property suffixed by a dash', () => {
+                assert.strictEqual(enumInfo.clientRootFolder, 'root-');
+            });
         });
     });
     describe('::deepFind function', () => {
         const jsonData = {
             foo11: 'foo11value',
             fooNested: { foo21: 'foo21value' },
-            foo21: 'foo21value'
+            foo21: 'foo21value',
         };
         describe('the key is found in the object that is searched', () => {
             it('returns the value associated to the key', () => {
@@ -72,6 +205,85 @@ describe('JHipster Utils', () => {
                 const value = utils.deepFind(jsonData, 'foo123');
                 assert.textEqual(`${value}`, 'undefined');
             });
+        });
+    });
+    describe('::stringHashCode', () => {
+        it('calculates hash', () => {
+            assert.equal(utils.stringHashCode('some text'), 642107175);
+        });
+    });
+    describe('::gitExec', () => {
+        describe('Executes command synchronously', () => {
+            it('without options', () => {
+                const result = utils.gitExec('--version');
+                assert.strictEqual(result.code, 0);
+                assert.strictEqual(result.stdout.length > 0, true);
+                assert.strictEqual(result.stdout.startsWith('git version '), true);
+                assert.strictEqual(result.stderr.length, 0);
+            });
+
+            it('with options', () => {
+                const result = utils.gitExec('--version', { trace: true });
+                assert.strictEqual(result.code, 0);
+                assert.strictEqual(result.stdout.length > 0, true);
+                assert.strictEqual(result.stdout.startsWith('git version '), true);
+                assert.strictEqual(result.stderr.length, 0);
+            });
+        });
+        describe('Executes command asynchronously', () => {
+            let cleanup;
+            let callback;
+            before(done => {
+                cleanup = prepareTempDir();
+                utils.gitExec('init');
+                callback = sinon.spy();
+                utils.gitExec('rev-parse --is-inside-work-tree', (...args) => {
+                    callback(...args);
+                    done();
+                });
+            });
+            after(() => cleanup());
+
+            it('without options', () => {
+                sinon.assert.calledOnce(callback);
+                assert.strictEqual(callback.getCall(0).args[0], 0);
+                assert.strictEqual(callback.getCall(0).args[1].trim(), 'true');
+                assert.strictEqual(callback.getCall(0).args[2], '');
+            });
+        });
+
+        describe('Executes command asynchronously', () => {
+            let cleanup;
+            let callback;
+            before(done => {
+                cleanup = prepareTempDir();
+                utils.gitExec('init');
+                callback = sinon.spy();
+                utils.gitExec('rev-parse --is-inside-work-tree', { trace: true }, (...args) => {
+                    callback(...args);
+                    done();
+                });
+            });
+            after(() => cleanup());
+
+            it('with options', () => {
+                sinon.assert.calledOnce(callback);
+                assert.strictEqual(callback.getCall(0).args[0], 0);
+                assert.strictEqual(callback.getCall(0).args[1].trim(), 'true');
+                assert.strictEqual(callback.getCall(0).args[2], '');
+            });
+        });
+    });
+    describe('::isGitInstalled', () => {
+        it('Check installed without callback', () => {
+            const isGitInstalled = utils.isGitInstalled();
+            assert.strictEqual(isGitInstalled, true);
+        });
+        it('Check installed and execute callback', () => {
+            const callback = sinon.spy();
+            const isGitInstalled = utils.isGitInstalled(callback);
+            assert.strictEqual(isGitInstalled, true);
+            sinon.assert.calledOnce(callback);
         });
     });
 });

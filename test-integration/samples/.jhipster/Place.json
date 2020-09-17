@@ -13,16 +13,15 @@
             "relationshipType": "many-to-one",
             "relationshipName": "owner",
             "otherEntityName": "division",
-            "otherEntityField": "name"
+            "otherEntityField": "name",
+            "otherEntityRelationshipName": "divisionsPlace"
         }
     ],
     "fields": [
         {
             "fieldName": "name",
             "fieldType": "String",
-            "fieldValidateRules": [
-                "required"
-            ]
+            "fieldValidateRules": ["required"]
         },
         {
             "fieldName": "numberOfSeats",
