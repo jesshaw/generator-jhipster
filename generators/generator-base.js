@@ -1135,6 +1135,7 @@ module.exports = class extends PrivateBase {
 
     /**
      * Load an entity configuration file into context.
+     * 加载实体配置到上下文
      */
     loadEntityJson(fromPath = this.context.fromPath) {
         const context = this.context;

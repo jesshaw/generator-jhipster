@@ -77,7 +77,7 @@ export const Home = (props: IHomeProp) => {
           <Translate contentKey="home.question">If you have any question on JHipster:</Translate>
         </p>
 
-        <ul>
+        <ul hidden={true}>
           <li>
             <a href="https://www.jhipster.tech/" target="_blank" rel="noopener noreferrer">
               <Translate contentKey="home.link.homepage">JHipster homepage</Translate>
@@ -105,7 +105,7 @@ export const Home = (props: IHomeProp) => {
           </li>
         </ul>
 
-        <p>
+        <p hidden={true}>
           <Translate contentKey="home.like">If you like JHipster, do not forget to give us a star on</Translate>
           {' '}
           <a href="https://github.com/jhipster/generator-jhipster" target="_blank" rel="noopener noreferrer">Github</a>!
